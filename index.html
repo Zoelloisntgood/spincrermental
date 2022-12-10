@@ -1,0 +1,179 @@
+<html>
+    <head>
+        <title>Spincremental</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <h1>You Spun <span id="deg">0</span>°</h1>
+        <p>(<span id="rdeg">0</span> degrees/s)</p>
+
+        <h2>You Have Done <span id="loops">0</span> Loops</h2>
+        <button onclick=upgrade() style="width: 75%; height: 7%; border-color:  #000000; border-width: 5px; font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; font-size: initial; background-color: #ff0000;">
+            +1 Degree/s
+            <br>
+            0.1 Loops
+        </button>
+        <br>
+        <br>
+        <button onclick=upgrade2() style="width: 75%; height: 7%; border-color:  #000000; border-width: 5px; font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; font-size: initial; background-color: #ff4400;">
+            +1 Degree/s<sup>2</sup>
+            <br>
+            1 Loop | <span id="rrdeg">0</span>
+        </button>
+        <br>
+        <br>
+        <button onclick=upgrade3() style="width: 75%; height: 7%; border-color:  #000000; border-width: 5px; font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; font-size: initial; background-color: #ff8800;">
+            +1 Degree/s<sup>3</sup>
+            <br>
+            100 Loops  | <span id="rrrdeg">0</span>
+        </button>
+        <br>
+        <br>
+        <button onclick=Booster() style="width: 30%; height: 10%; border-color:  #000000; border-width: 5px; font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; font-size: initial; background-color: #0000aa; color: white;">
+            Booster
+            <br>
+            <span id="boostercost">5000</span> Loops
+        </button>
+        <p style="color:#0000aa;">Boosters: <span id="booster">0</span></p>
+        <p style="color:#0000aa;"><sup>(Boosters don't reset upgrade 1, 2, and 3 at 5 boosters.)</sup></p>
+        <button onclick=upgrade4() style="width: 15%; height: 7%; border-color:  #000000; border-width: 5px; font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; font-size: initial; background-color: #0000aa; color: white;">
+            1 Booster/s
+            <br>
+            <span id="rboostercost">10</span> Boosters
+        </button>
+
+        <script>
+            var deg = 0;
+            var rdeg = 10;
+            var loops = 0;
+            var rrdeg = 0;
+            var rrrdeg = 0;
+            var booster = 0;
+            var boostercost = 5000;
+            var rbooster = 0;
+            var rboostercost = 10;
+
+            function upgrade4() {
+                if (booster >= rboostercost) {
+                    booster -= rboostercost;
+                    rbooster += 1;
+                    rboostercost = Math.round(rboostercost * 1.25);
+                    document.getElementById("booster").innerHTML = booster;
+                    document.getElementById("rbooster").innerHTML = rbooster;
+                    document.getElementById("rboostercost").innerHTML = rboostercost;
+                }
+            }
+            function Booster() {
+                if (loops >= boostercost && booster < 5) {
+                    deg = 0;
+                    rdeg = 10;
+                    rrdeg = 0;
+                    rrrdeg = 0;
+                    booster += 1;
+                    boostercost *= 2;
+                    document.getElementById("deg").innerHTML = deg;
+                    document.getElementById("rdeg").innerHTML = rdeg;
+                    document.getElementById("rrdeg").innerHTML = rrdeg;
+                    document.getElementById("rrrdeg").innerHTML = rrrdeg;
+                    document.getElementById("booster").innerHTML = booster;
+                    document.getElementById("boostercost").innerHTML = boostercost;
+
+                
+                } 
+                if (loops >= boostercost && booster >= 5) {
+                    deg = 0;
+                    booster += 1;
+                    boostercost *= 2;
+                    document.getElementById("deg").innerHTML = deg;
+                    document.getElementById("booster").innerHTML = booster;
+                    document.getElementById("boostercost").innerHTML = boostercost;
+                }
+            }
+            function upgrade3() {
+                if (loops >= 100) {
+                    deg -= 36000;
+                    rrrdeg += (booster + 1);
+                    document.getElementById("deg").innerHTML = deg;
+                    document.getElementById("rrrdeg").innerHTML = rrrdeg;
+                }
+            }
+
+            function upgrade2() {
+                if (loops >= 1) {
+                    deg -= 360;
+                    rrdeg += (booster + 1);
+                    document.getElementById("deg").innerHTML = deg;
+                    document.getElementById("rrdeg").innerHTML = rrdeg;
+                }
+            }
+            function upgrade() {
+                if (loops >= 0.1) {
+                    deg -= 36;
+                    rdeg += (booster + 1);
+                    document.getElementById("deg").innerHTML = deg;
+                    document.getElementById("rdeg").innerHTML = rdeg;
+                }
+            }
+
+            setInterval(function() {
+                deg += Math.floor(rdeg / 10);
+                document.getElementById("deg").innerHTML = deg;
+                document.getElementById("rdeg").innerHTML = rdeg;
+            },100);
+            setInterval(function() {
+                loops = Math.floor(deg / 3.6) / 100;
+                document.getElementById("loops").innerHTML = loops;
+            },1);
+            setInterval(function() {
+                rdeg += rrdeg * (booster + 1);
+                document.getElementById("rdeg").innerHTML = rdeg;
+            },1000);
+            setInterval(function() {
+                rrdeg += rrrdeg * (booster + 1);
+                document.getElementById("rrdeg").innerHTML = rrdeg;
+            },1000);
+            setInterval(function() {
+                booster += rbooster;
+                document.getElementById("booster").innerHTML = booster;
+            },1000);
+            setInterval(function() {
+                document.getElementById("rboostercost").innerHTML = rboostercost;
+            },1);
+            function saveGame() {
+                    var gameSave = {
+                        deg: deg,
+                        rdeg: rdeg,
+                        loops: loops,
+                        rrdeg: rrdeg,
+                        rrrdeg: rrrdeg,
+                        booster: booster,
+                        boostercost: boostercost,
+                        rbooster: rbooster,
+                        rboostercost: rboostercost
+                    };
+                    localStorage.setItem("gameSave", JSON.stringify(gameSave));
+            }
+
+            function loadGame() {
+                    var savedGame = JSON.parse(localStorage.getItem("gameSave"));
+                    if (typeof savedGame.deg !== "undefined") deg = savedGame.deg;
+                    if (typeof savedGame.rdeg !== "undefined") rdeg = savedGame.rdeg;
+                    if (typeof savedGame.loops !== "undefined") loops = savedGame.loops;
+                    if (typeof savedGame.rrdeg !== "undefined") rrdeg = savedGame.rrdeg;
+                    if (typeof savedGame.rrrdeg !== "undefined") rrrdeg = savedGame.rrrdeg;
+                    if (typeof savedGame.booster !== "undefined") booster = savedGame.booster;
+                    if (typeof savedGame.boostercost !== "undefined") boostercost = savedGame.boostercost;
+                    if (typeof savedGame.rbooster !== "undefined") rbooster = savedGame.rbooster;
+                    if (typeof savedGame.rboostercost !== "undefined") rboostercost = savedGame.rboostercost;
+
+            }
+
+            window.onload = function() {
+                    loadGame();
+            };
+            setInterval(function() {
+                saveGame()
+            },100);
+            </script>
+    </body>
+</html>
